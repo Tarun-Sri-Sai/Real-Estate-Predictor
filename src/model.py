@@ -103,7 +103,7 @@ def main():
     df = df.drop(['bhk'], axis=1)
 
     # Concatenating city into location
-    df['location'] = df['location'] + ', ' + df['city']
+    df['location'] = df['location'].apply(str.title) + ', ' + df['city']
 
     # Feature encoding
     encodings = {}
