@@ -102,6 +102,9 @@ def main():
     df.insert(4, 'bhk/rk', df['bhk'].apply(get_bhk))
     df = df.drop(['bhk'], axis=1)
 
+    # Concatenating city into location
+    df['location'] = df['location'] + ', ' + df['city']
+
     # Feature encoding
     encodings = {}
     encoding_variables = [
