@@ -59,11 +59,11 @@ def main():
     df = df.drop('Unnamed: 0', axis=1)
 
     df.insert(0, 'seller_name',
-        df['Seller Name'].apply(lambda x: x.strip()))
+              df['Seller Name'].apply(lambda x: x.strip()))
     df = df.drop('Seller Name', axis=1)
 
     df.insert(1, 'seller_type',
-        df['Seller type'].apply(lambda x: x.strip()))
+              df['Seller type'].apply(lambda x: x.strip()))
     df = df.drop('Seller type', axis=1)
 
     df.insert(2, 'bhk', df['BHK'].apply(lambda x: x.strip()))
@@ -76,14 +76,14 @@ def main():
     df = df.drop('City', axis=1)
 
     df.insert(5, 'price_per_sqft',
-        df['price per sqft'].apply(lambda x: x.strip()))
+              df['price per sqft'].apply(lambda x: x.strip()))
     df = df.drop('price per sqft', axis=1)
 
     df.insert(6, 'area', df['Area_sqft'])
     df = df.drop('Area_sqft', axis=1)
 
     df.insert(7, 'construction_status',
-        df['Construction status'].apply(lambda x: x.strip()))
+              df['Construction status'].apply(lambda x: x.strip()))
     df = df.drop('Construction status', axis=1)
 
     df.insert(8, 'price', df['Total Price'].apply(lambda x: x.strip()))
@@ -102,7 +102,8 @@ def main():
         'location', 'city', 'construction_status'
     ]
     for column in encoding_variables:
-        encodings[column] = create_encodings(df[column], df['price'].apply(price_to_lacs))
+        encodings[column] = create_encodings(
+            df[column], df['price'].apply(price_to_lacs))
 
     # Creating a numeric dataframe
     df_num = pd.DataFrame()
@@ -130,11 +131,11 @@ def main():
 
     # Saving the model
     json.dump({
-            'encoding_variables': encoding_variables,
-            'encodings': encodings,
-            'df_dict': df.to_dict(),
-            'columns': X.columns.tolist()
-        }, open(os.path.join('..', 'input', 'input.json'), 'w'), indent=4)
+        'encoding_variables': encoding_variables,
+        'encodings': encodings,
+        'df_dict': df.to_dict(),
+        'columns': X.columns.tolist()
+    }, open(os.path.join('..', 'input', 'input.json'), 'w'), indent=4)
     pk.dump(model, open(os.path.join(
         '..', 'models', 'linear_regression.sav'), 'wb'))
 
