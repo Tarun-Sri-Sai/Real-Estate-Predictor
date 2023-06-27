@@ -1,6 +1,6 @@
 # Editor generated files
-src/__pycache__/
+server/src/__pycache__/
 
 # App files
-model/
-catalog/
+server/model/
+server/catalog/
