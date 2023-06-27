@@ -16,6 +16,10 @@ print(input_data)
 
 response = rq.post('http://localhost:5000/process_input', json=input_data)
 processed_input = response.json()['processed_input']
+temp = {}
+for column in column_names:
+    temp[column] = processed_input[column]
+processed_input = temp
 
 # To get price prediction
 response = rq.post('http://localhost:5000/get_pred', json=processed_input)
