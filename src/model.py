@@ -131,7 +131,6 @@ def main():
         lambda x: value_counts[x] > 10)]
 
     # Model training
-    print(df_fil.columns)
     X = df_fil.iloc[:, [2, 3, 4, 6, 7]]
     Y = df_fil.iloc[:, -1]
     model = LinearRegression()
