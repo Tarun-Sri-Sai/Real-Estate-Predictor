@@ -1,7 +1,8 @@
+from sklearn.linear_model import LinearRegression
+
 import pandas as pd
 import pickle as pk
-from sklearn.model_selection import train_test_split
-from sklearn.linear_model import LinearRegression
+
 import os
 import json
 
@@ -49,6 +50,14 @@ def price_to_lacs(text: str) -> float:
         return int(float(text.split()[0]))
 
     return int(float(text.split()[0]) * 100)
+
+
+def unique_df_dict(df_dict: dict):
+    result = {}
+    for key, _ in df_dict.items():
+        result[key] = list(set(df_dict[key].values()))
+
+    return result
 
 
 def main():
@@ -122,18 +131,17 @@ def main():
         lambda x: value_counts[x] > 10)]
 
     # Model training
-    X = df_fil.iloc[:, 2:-1]
+    print(df_fil.columns)
+    X = df_fil.iloc[:, [2, 3, 4, 6, 7]]
     Y = df_fil.iloc[:, -1]
-    X_train, X_test, Y_train, Y_test = train_test_split(
-        X, Y, test_size=0.3, random_state=42)
     model = LinearRegression()
-    model.fit(X_train, Y_train)
+    model.fit(X, Y)
 
     # Saving the model
     json.dump({
         'encoding_variables': encoding_variables,
         'encodings': encodings,
-        'df_dict': df.to_dict(),
+        'df_dict': unique_df_dict(df.to_dict()),
         'columns': X.columns.tolist()
     }, open(os.path.join('..', 'input', 'input.json'), 'w'), indent=4)
     pk.dump(model, open(os.path.join(
