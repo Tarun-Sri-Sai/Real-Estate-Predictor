@@ -36,4 +36,4 @@ class App:
         return input_encodings
 
     def get_pred(self, input):
-        return self.model.predict(pd.DataFrame(input, index=[0]))
+        return self.model.predict(pd.DataFrame(input, index=[0]))[0]
