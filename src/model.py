@@ -21,7 +21,7 @@ def get_bhk(text: str) -> str:
     result = text.strip().replace(get_plot_type(text), '')
     if result == '':
         return 0
-    
+
     return int(result.split()[0])
 
 
@@ -35,22 +35,25 @@ def create_encodings(column, price):
     unique_categories = df_temp['column'].unique()
     avg_prices = df_temp.groupby('column')['price'].mean()
     sorted_categories = list(sorted(unique_categories, key=lambda x: avg_prices[x]))
-    encodings = {category: index for index, category in enumerate(sorted_categories)}
+    encodings = {
+        category: index for index,
+        category in enumerate(sorted_categories)
+    }
     return encodings
 
 
 def price_to_lacs(text: str) -> float:
-  text = text.strip()
-  if 'L' in text:
-    return int(float(text.split()[0]))
+    text = text.strip()
+    if 'L' in text:
+        return int(float(text.split()[0]))
 
-  return int(float(text.split()[0]) * 100)
+    return int(float(text.split()[0]) * 100)
 
 
 def main():
     # Reading the CSV file
     df = pd.read_csv(os.path.join('data', 'data.csv'))
-    
+
     # Remove unwanted columns and rename
     df = df.drop('Unnamed: 0', axis=1)
     df.insert(0, 'seller_name', df['Seller Name'].apply(lambda x: x.strip()))
@@ -77,12 +80,14 @@ def main():
     df.insert(4, 'bhk/rk', df['bhk'].apply(get_bhk))
     df = df.drop(['bhk'], axis=1)
 
-
     # Feature encoding
     encodings = {}
-    encoding_variables = ['seller_name', 'seller_type', 'plot_type', 'location', 'city', 'construction_status']
+    encoding_variables = [
+        'seller_name', 'seller_type', 'plot_type',
+        'location', 'city', 'construction_status'
+    ]
     for column in encoding_variables:
-      encodings[column] = create_encodings(df[column], df['price'].apply(price_to_lacs))
+        encodings[column] = create_encodings(df[column], df['price'].apply(price_to_lacs))
 
     # Creating a numeric dataframe
     df_num = pd.DataFrame()
@@ -93,11 +98,10 @@ def main():
 
     # Converting prices to lacs
     df_num['price'] = df['price'].apply(price_to_lacs)
-    
+
     # Removing outliers
     value_counts = df_num['price'].value_counts().to_dict()
     df_fil = df_num[df_num['price'].apply(lambda x: value_counts[x] > 10)]
-
 
     # Model training
     X = df_fil.iloc[:, 2:-1]
@@ -107,10 +111,12 @@ def main():
     model.fit(X_train, Y_train)
 
     # Saving the model
-    json.dump({'encoding_variables': encoding_variables, 
-           'encodings': encodings, 
-           'df_dict': df.to_dict(), 
-           'columns': X.columns.tolist()}, open(os.path.join('cache', 'input.json'), 'w'))
+    json.dump({
+            'encoding_variables': encoding_variables,
+            'encodings': encodings,
+            'df_dict': df.to_dict(),
+            'columns': X.columns.tolist()
+        }, open(os.path.join('cache', 'input.json'), 'w'), indent=4)
     pk.dump(model, open(os.path.join('models', 'linear_regression.sav'), 'wb'))
 
 
