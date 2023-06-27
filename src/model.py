@@ -1,8 +1,6 @@
 from sklearn.linear_model import LinearRegression
-
 import pandas as pd
 import pickle as pk
-
 import os
 import json
 
@@ -143,8 +141,7 @@ def main():
         'data_values': get_data_values(df.to_dict()),
         'columns': X.columns.tolist()
     }, open(os.path.join('..', 'catalog', 'catalog.json'), 'w'), indent=4)
-    pk.dump(model, open(os.path.join(
-        '..', 'models', 'linear_regression.sav'), 'wb'))
+    pk.dump(model, open(os.path.join('..', 'model', 'model.sav'), 'wb'))
 
 
 if __name__ == "__main__":

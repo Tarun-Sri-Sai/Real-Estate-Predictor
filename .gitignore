@@ -3,5 +3,5 @@ src/__pycache__/
 src/.ipynb_checkpoints/
 
 # App files
-models/
+model/
 catalog/
