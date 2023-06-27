@@ -142,7 +142,7 @@ def main():
         'encodings': encodings,
         'df_dict': unique_df_dict(df.to_dict()),
         'columns': X.columns.tolist()
-    }, open(os.path.join('..', 'input', 'input.json'), 'w'), indent=4)
+    }, open(os.path.join('..', 'catalog', 'catalog.json'), 'w'), indent=4)
     pk.dump(model, open(os.path.join(
         '..', 'models', 'linear_regression.sav'), 'wb'))
 
