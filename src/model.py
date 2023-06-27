@@ -52,7 +52,7 @@ def price_to_lacs(text: str) -> float:
     return int(float(text.split()[0]) * 100)
 
 
-def unique_df_dict(df_dict: dict):
+def get_data_values(df_dict: dict):
     result = {}
     for key, _ in df_dict.items():
         result[key] = list(set(df_dict[key].values()))
@@ -140,7 +140,7 @@ def main():
     json.dump({
         'encoding_variables': encoding_variables,
         'encodings': encodings,
-        'df_dict': unique_df_dict(df.to_dict()),
+        'data_values': get_data_values(df.to_dict()),
         'columns': X.columns.tolist()
     }, open(os.path.join('..', 'catalog', 'catalog.json'), 'w'), indent=4)
     pk.dump(model, open(os.path.join(
