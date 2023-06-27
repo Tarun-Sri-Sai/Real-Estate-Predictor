@@ -1,4 +1,7 @@
+# Editor generated files
+src/__pycache__/
 src/.ipynb_checkpoints/
+
+# App files
 models/
 catalog/
-src/__pycache__/
