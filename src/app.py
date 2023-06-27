@@ -10,7 +10,7 @@ class App:
         catalog_path: str = os.path.join('..', 'catalog', 'catalog.json')
         model_path: str = os.path.join('..', 'model', 'model.sav')
 
-        if not os.path.isfile(catalog_path) or os.path.isfile(model_path):
+        if not any([os.path.isfile(catalog_path), os.path.isfile(model_path)]):
             model.main()
 
         self.catalog = json.load(open(catalog_path, 'r'))
