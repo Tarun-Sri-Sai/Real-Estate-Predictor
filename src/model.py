@@ -110,8 +110,8 @@ def main():
     json.dump({'encoding_variables': encoding_variables, 
            'encodings': encodings, 
            'df_dict': df.to_dict(), 
-           'columns': X.columns.tolist()}, open('../cache/input_cache.json', 'w'))
-    pk.dump(model, open('../models/linear_regression.sav', 'wb'))
+           'columns': X.columns.tolist()}, open(os.path.join('cache', 'input.json'), 'w'))
+    pk.dump(model, open(os.path.join('models', 'linear_regression.sav'), 'wb'))
 
 
 if __name__ == "__main__":
