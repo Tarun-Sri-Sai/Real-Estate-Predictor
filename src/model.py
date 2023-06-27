@@ -105,6 +105,10 @@ def main():
     # Concatenating city into location
     df['location'] = df['location'].apply(str.title) + ', ' + df['city']
 
+    # Adding title case to plot type and construction status
+    df['plot_type'] = df['plot_type'].apply(str.title)
+    df['construction_status'] = df['construction_status'].apply(str.title)
+
     # Feature encoding
     encodings = {}
     encoding_variables = [
@@ -137,14 +141,21 @@ def main():
     model = LinearRegression()
     model.fit(X, Y)
 
+    # Creating necessary directories
+    catalog_dir: str = os.path.join('..', 'catalog')
+    model_dir: str = os.path.join('..', 'model')
+
+    os.mkdir(catalog_dir)
+    os.mkdir(model_dir)
+
     # Saving the model
     json.dump({
         'encoding_variables': encoding_variables,
         'encodings': encodings,
         'data_values': get_data_values(df.to_dict()),
         'columns': X.columns.tolist()
-    }, open(os.path.join('..', 'catalog', 'catalog.json'), 'w'), indent=4)
-    pk.dump(model, open(os.path.join('..', 'model', 'model.sav'), 'wb'))
+    }, open(os.path.join(catalog_dir, 'catalog.json'), 'w'), indent=4)
+    pk.dump(model, open(os.path.join(model_dir, 'model.sav'), 'wb'))
 
 
 if __name__ == "__main__":
