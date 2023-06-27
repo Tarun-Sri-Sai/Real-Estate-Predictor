@@ -52,7 +52,7 @@ def price_to_lacs(text: str) -> float:
 
 def main():
     # Reading the CSV file
-    df = pd.read_csv(os.path.join('data', 'data.csv'))
+    df = pd.read_csv(os.path.join('..', 'data', 'data.csv'))
 
     # Remove unwanted columns and rename
     df = df.drop('Unnamed: 0', axis=1)
@@ -116,8 +116,8 @@ def main():
             'encodings': encodings,
             'df_dict': df.to_dict(),
             'columns': X.columns.tolist()
-        }, open(os.path.join('cache', 'input.json'), 'w'), indent=4)
-    pk.dump(model, open(os.path.join('models', 'linear_regression.sav'), 'wb'))
+        }, open(os.path.join('..', 'input', 'input.json'), 'w'), indent=4)
+    pk.dump(model, open(os.path.join('..', 'models', 'linear_regression.sav'), 'wb'))
 
 
 if __name__ == "__main__":
