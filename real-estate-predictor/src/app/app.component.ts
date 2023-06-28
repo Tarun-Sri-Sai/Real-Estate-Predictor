@@ -9,6 +9,9 @@ import { HttpClient } from '@angular/common/http'
 export class AppComponent implements OnInit {
   columns: string[] = []
   dataValues: { [column: string]: any } = {}
+  inputData: { [column: string]: any } = {}
+  processedInput: { [column: string]: any } = {}
+  result: number = 0
 
   constructor(private http: HttpClient) { }
 
@@ -22,7 +25,6 @@ export class AppComponent implements OnInit {
       .subscribe({
         next: (response) => {
           this.columns = response['column_names']
-          console.log(this.columns)
         },
         error: (err) => {
           console.error('Unable to receive columns due to ', err)
@@ -35,7 +37,6 @@ export class AppComponent implements OnInit {
       .subscribe({
         next: (response) => {
           this.dataValues = response['data_values']
-          console.log(this.dataValues)
         },
         error: (err) => {
           console.error('Unable to receive data values due to ', err)
@@ -50,5 +51,36 @@ export class AppComponent implements OnInit {
       }
       return word.charAt(0).toUpperCase() + word.slice(1)
     }).join(' ')
+  }
+
+  getResult(): void {
+    this.getInputData()
+
+    this.http.post<any>('http://localhost:5000/process_input', this.inputData)
+      .subscribe({
+        next: (response) => {
+          this.processedInput = response['processed_input']
+          this.http.post<any>('http://localhost:5000/get_pred', this.processedInput)
+            .subscribe({
+              next: (response) => {
+                this.result = response['price_in_lacs']
+              },
+              error: (err) => {
+                console.error('Unable to get price due to ', err)
+              }
+            })
+        },
+        error: (err) => {
+          console.error('Unable to process input data due to ', err)
+        }
+      })
+  }
+
+  getInputData(): void {
+    for (let column of this.columns) {
+      let selectElement = document.getElementById(column) as HTMLSelectElement
+      let value = selectElement.value
+      this.inputData[column] = value
+    }
   }
 }

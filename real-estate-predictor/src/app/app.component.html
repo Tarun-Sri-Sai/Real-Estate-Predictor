@@ -7,12 +7,12 @@
                     <label [for]="column">{{ transformColumnName(column) + ':' }}</label>
                 </div>
                 <div class="select">
-                    <select [id]="column">
+                    <select [id]="column" (change)="getResult()">
                         <option *ngFor="let value of dataValues[column]" [value]="value">{{ value }}</option>
                     </select>
                 </div>
             </h6>
-            <div class="btn btn-primary horizontal-center">Predict Price</div>
+            <h6 class="result top-spacing horizontal-center" *ngIf="result > 0">{{ 'Price in lacs: Rs. ' + result }}</h6>
         </div>
     </div>
 </div>
