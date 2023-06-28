@@ -36,4 +36,7 @@ class App:
         return input_encodings
 
     def get_pred(self, input):
-        return self.model.predict(pd.DataFrame(input, index=[0]))[0]
+        ordered_input = {}
+        for column in self.get_columns():
+            ordered_input[column] = input[column]
+        return self.model.predict(pd.DataFrame(ordered_input, index=[0]))[0]
