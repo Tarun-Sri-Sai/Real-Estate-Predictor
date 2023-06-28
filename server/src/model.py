@@ -149,13 +149,16 @@ def main():
     os.mkdir(model_dir)
 
     # Saving the model
-    json.dump({
-        'encoding_variables': encoding_variables,
-        'encodings': encodings,
-        'data_values': get_data_values(df.to_dict()),
-        'columns': X.columns.tolist()
-    }, open(os.path.join(catalog_dir, 'catalog.json'), 'w'), indent=4)
-    pk.dump(model, open(os.path.join(model_dir, 'model.sav'), 'wb'))
+    with open(os.path.join(catalog_dir, 'catalog.json'), 'w') as catalog_writer:
+        json.dump({
+            'encoding_variables': encoding_variables,
+            'encodings': encodings,
+            'data_values': get_data_values(df.to_dict()),
+            'columns': X.columns.tolist()
+        }, catalog_writer, indent=4)
+    
+    with open(os.path.join(model_dir, 'model.sav'), 'wb') as model_writer:
+        pk.dump(model, model_writer)
 
 
 if __name__ == "__main__":
