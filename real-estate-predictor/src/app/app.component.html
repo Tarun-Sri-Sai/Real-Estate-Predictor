@@ -1,0 +1,18 @@
+<div class="container">
+    <div class="row">
+        <div class="col-md-6 offset-md-3">
+            <h2 class="horizontal-center top-spacing">Real Estate Price Predictor</h2>
+            <h6 *ngFor="let column of columns">
+                <div class="label">
+                    <label [for]="column">{{ transformColumnName(column) + ':' }}</label>
+                </div>
+                <div class="select">
+                    <select [id]="column">
+                        <option *ngFor="let value of dataValues[column]" [value]="value">{{ value }}</option>
+                    </select>
+                </div>
+            </h6>
+            <div class="btn btn-primary horizontal-center">Predict Price</div>
+        </div>
+    </div>
+</div>
