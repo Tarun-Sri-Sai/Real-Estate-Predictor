@@ -12,6 +12,7 @@ export class AppComponent implements OnInit {
   inputData: { [column: string]: any } = {}
   processedInput: { [column: string]: any[] } = {}
   result: number = 0
+  selectedOption: { [column: string]: any } = {}
 
   constructor(private http: HttpClient) { }
 
@@ -78,9 +79,11 @@ export class AppComponent implements OnInit {
 
   getInputData(): void {
     for (let column of this.columns) {
-      let selectElement = document.getElementById(column) as HTMLSelectElement
-      let value = selectElement.value
-      this.inputData[column] = value
+      this.inputData[column] = this.selectedOption[column]
     }
+  }
+
+  customSearch(term: string, item: any): boolean {
+    return item.toString().toLowerCase().includes(term.toLowerCase());
   }
 }

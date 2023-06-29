@@ -1,6 +1,6 @@
 <div class="container">
     <div class="row">
-        <div class="col-md-6 offset-md-3">
+        <div class="col-md-4 offset-md-4">
             <h2 class="horizontal-center top-spacing">
                 Real Estate Price Predictor
             </h2>
@@ -11,11 +11,13 @@
                     </label>
                 </div>
                 <div class="select">
-                    <select [id]="column" (change)="getResult()">
-                        <option *ngFor="let value of dataValues[column]" [value]="value">
-                            {{ value }}
-                        </option>
-                    </select>
+                    <ng-select class="border-black top-spacing" [id]="column" [(ngModel)]="selectedOption[column]"
+                               [items]="dataValues[column]" bindLabel="item" bindValue="item" 
+                               [searchFn]="customSearch" (change)="getResult()">
+                        <ng-template ng-option-tmp let-item="item">
+                            {{ item }}
+                        </ng-template>
+                    </ng-select>
                 </div>
             </h6>
             <h6 class="result top-spacing horizontal-center" *ngIf="result > 0">

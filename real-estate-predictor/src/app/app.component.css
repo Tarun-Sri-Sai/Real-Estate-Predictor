@@ -24,3 +24,23 @@ label {
     transform: scale(1.05);
     box-shadow: 0 6px 8px rgba(0, 0, 0, 0.2);
 }
+
+.border-black {
+    border: 1px solid black;
+    border-radius: 5px;
+    padding: 5px;
+}
+
+::ng-deep .ng-dropdown-panel {
+    border: 1px solid black;
+}
+
+::ng-deep .ng-dropdown-panel .ng-option:not(.ng-option-selected) {
+    background-color: rgba(255, 255, 255, 1);
+    padding: 5px;
+}
+
+::ng-deep .ng-dropdown-panel .ng-option.ng-option-selected {
+    background-color: rgb(187, 187, 187);
+    padding: 5px;
+}
