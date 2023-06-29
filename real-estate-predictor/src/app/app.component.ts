@@ -8,9 +8,9 @@ import { HttpClient } from '@angular/common/http'
 })
 export class AppComponent implements OnInit {
   columns: string[] = []
-  dataValues: { [column: string]: any } = {}
+  dataValues: { [column: string]: any[] } = {}
   inputData: { [column: string]: any } = {}
-  processedInput: { [column: string]: any } = {}
+  processedInput: { [column: string]: any[] } = {}
   result: number = 0
 
   constructor(private http: HttpClient) { }
