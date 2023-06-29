@@ -57,6 +57,12 @@ export class AppComponent implements OnInit {
   getResult(): void {
     this.getInputData()
 
+    for (let column of this.columns) {
+        if (!this.inputData[column]) {
+        return
+      }
+    }
+
     this.http.post<any>('http://localhost:5000/process_input', this.inputData)
       .subscribe({
         next: (response) => {
