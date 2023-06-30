@@ -1,5 +1,6 @@
 from sklearn.linear_model import LinearRegression
 
+import preprocess as pp
 import pandas as pd
 import pickle as pk
 
@@ -18,30 +19,12 @@ def get_plot_type(text: str) -> str:
     return text.strip()
 
 
-def get_bhk(text: str) -> str:
+def get_bhk(text: str) -> int:
     result = text.strip().replace(get_plot_type(text), '')
     if result == '':
         return 0
 
     return int(result.split()[0])
-
-
-def encode(column, encodings):
-    encoded_column = column.map(encodings)
-    return encoded_column
-
-
-def create_encodings(column, price):
-    df_temp = pd.DataFrame({'column': column, 'price': price})
-    unique_categories = df_temp['column'].unique()
-    avg_prices = df_temp.groupby('column')['price'].mean()
-    sorted_categories = list(sorted(unique_categories,
-                                    key=lambda x: avg_prices[x]))
-    encodings = {
-        category: index for index,
-        category in enumerate(sorted_categories)
-    }
-    return encodings
 
 
 def price_to_lacs(text: str) -> float:
@@ -52,64 +35,30 @@ def price_to_lacs(text: str) -> float:
     return int(float(text.split()[0]) * 100)
 
 
-def get_data_values(df_dict: dict):
-    result = {}
-    for key, _ in df_dict.items():
-        result[key] = list(set(df_dict[key].values()))
-
-    return result
-
 
 def main():
     # Reading the CSV file
-    df = pd.read_csv(os.path.join('..', 'data', 'data.csv'))
+    df: pd.DataFrame = pd.read_csv(os.path.join('..', 'data', 'data.csv'))
 
-    # Remove unwanted columns and rename
-    df = df.drop('Unnamed: 0', axis=1)
-
-    df.insert(0, 'seller_name',
-              df['Seller Name'].apply(lambda x: x.strip()))
-    df = df.drop('Seller Name', axis=1)
-
-    df.insert(1, 'seller_type',
-              df['Seller type'].apply(lambda x: x.strip()))
-    df = df.drop('Seller type', axis=1)
-
-    df.insert(2, 'bhk', df['BHK'].apply(lambda x: x.strip()))
-    df = df.drop('BHK', axis=1)
-
-    df.insert(3, 'location', df['Location'].apply(lambda x: x.strip()))
-    df = df.drop('Location', axis=1)
-
-    df.insert(4, 'city', df['City'].apply(lambda x: x.strip()))
-    df = df.drop('City', axis=1)
-
-    df.insert(5, 'price_per_sqft',
-              df['price per sqft'].apply(lambda x: x.strip()))
-    df = df.drop('price per sqft', axis=1)
-
-    df.insert(6, 'area', df['Area_sqft'])
-    df = df.drop('Area_sqft', axis=1)
-
-    df.insert(7, 'construction_status',
-              df['Construction status'].apply(lambda x: x.strip()))
-    df = df.drop('Construction status', axis=1)
-
-    df.insert(8, 'price', df['Total Price'].apply(lambda x: x.strip()))
-    df = df.drop('Total Price', axis=1)
+    # Preprocessing the dataframe columns
+    df = pp.rename(df, df.columns)
+    df = pp.strip(df, pp.string_cols(df))
 
     # Extracting plot type from BHK
-    df.insert(3, 'plot_type', df['bhk'].apply(get_plot_type))
+    df.insert(4, 'plot_type', df['bhk'].apply(get_plot_type))
+    df.insert(5, 'bhk/rk', df['bhk'].apply(get_bhk))
 
-    df.insert(4, 'bhk/rk', df['bhk'].apply(get_bhk))
-    df = df.drop(['bhk'], axis=1)
+    # Removing unwanted columns
+    df = pp.remove(df, ['unnamed_0', 'bhk'])    
+
+    # Adding title case
+    df = pp.title(df, ['plot_type', 'construction_status', 'location'])
 
     # Concatenating city into location
-    df['location'] = df['location'].apply(str.title) + ', ' + df['city']
+    df['location'] = df['location'] + ', ' + df['city']
 
-    # Adding title case to plot type and construction status
-    df['plot_type'] = df['plot_type'].apply(str.title)
-    df['construction_status'] = df['construction_status'].apply(str.title)
+    # Converting prices to lacs
+    df['total_price'] = df['total_price'].apply(price_to_lacs)
 
     # Feature encoding
     encodings = {}
@@ -118,24 +67,20 @@ def main():
         'location', 'city', 'construction_status'
     ]
     for column in encoding_variables:
-        encodings[column] = create_encodings(
-            df[column], df['price'].apply(price_to_lacs))
+        encodings[column] = pp.create_encodings(
+            df[column], df['total_price'])
 
     # Creating a numeric dataframe
     df_num = pd.DataFrame()
     for column in encoding_variables:
-        df_num[column] = encode(df[column], encodings[column])
+        df_num[column] = pp.encode(df[column], encodings[column])
 
     df_num.insert(3, 'bhk/rk', df['bhk/rk'])
-    df_num.insert(6, 'area', df['area'])
-
-    # Converting prices to lacs
-    df_num['price'] = df['price'].apply(price_to_lacs)
+    df_num.insert(6, 'area_sqft', df['area_sqft'])
+    df_num.insert(8, 'total_price', df['total_price'])
 
     # Removing outliers
-    value_counts = df_num['price'].value_counts().to_dict()
-    df_fil = df_num[df_num['price'].apply(
-        lambda x: value_counts[x] > 10)]
+    df_fil = pp.remove_outliers(df_num, ['total_price'], 10)
 
     # Model training
     X = df_fil.iloc[:, [2, 3, 4, 6, 7]]
@@ -155,7 +100,7 @@ def main():
         json.dump({
             'encoding_variables': encoding_variables,
             'encodings': encodings,
-            'data_values': get_data_values(df.to_dict()),
+            'data_values': pp.get_values(df.to_dict()),
             'columns': X.columns.tolist()
         }, catalog_writer, indent=4)
     
