@@ -1,0 +1,23 @@
+label {
+    margin-top: 20px;
+}
+
+.border-black {
+    border: 1px solid black;
+    border-radius: 5px;
+    padding: 5px;
+}
+
+::ng-deep .ng-dropdown-panel {
+    border: 1px solid black;
+}
+
+::ng-deep .ng-dropdown-panel .ng-option:not(.ng-option-selected) {
+    background-color: rgba(255, 255, 255, 1);
+    padding: 5px;
+}
+
+::ng-deep .ng-dropdown-panel .ng-option.ng-option-selected {
+    background-color: rgb(187, 187, 187);
+    padding: 5px;
+}

@@ -4,11 +4,17 @@ import { HttpClientModule } from '@angular/common/http'
 import { FormsModule } from '@angular/forms'
 import { NgSelectModule } from '@ng-select/ng-select'
 
-import { AppComponent } from './app.component'
+import { AppComponent } from './app.component';
+import { TitleComponent } from './title/title.component';
+import { ResultComponent } from './result/result.component';
+import { InputComponent } from './input/input.component'
 
 @NgModule({
   declarations: [
-    AppComponent
+    AppComponent,
+    TitleComponent,
+    ResultComponent,
+    InputComponent
   ],
   imports: [
     BrowserModule,

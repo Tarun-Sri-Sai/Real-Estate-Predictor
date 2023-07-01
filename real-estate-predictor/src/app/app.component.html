@@ -1,28 +1,9 @@
 <div class="container">
     <div class="row">
         <div class="col-md-4 offset-md-4">
-            <h2 class="horizontal-center top-spacing">
-                Real Estate Price Predictor
-            </h2>
-            <h6 *ngFor="let column of columns">
-                <div class="label">
-                    <label [for]="column">
-                        {{ transformColumnName(column) + ':' }}
-                    </label>
-                </div>
-                <div class="select">
-                    <ng-select class="border-black top-spacing" [id]="column" [(ngModel)]="selectedOption[column]"
-                               [items]="dataValues[column]" bindLabel="item" bindValue="item" 
-                               [searchFn]="customSearch" (change)="getResult()">
-                        <ng-template ng-option-tmp let-item="item">
-                            {{ item }}
-                        </ng-template>
-                    </ng-select>
-                </div>
-            </h6>
-            <h6 class="result top-spacing horizontal-center" *ngIf="result > 0">
-                {{ 'Price in lacs: Rs. ' + result }}
-            </h6>
+            <app-title></app-title>
+            <app-input></app-input>
+            <app-result></app-result>
         </div>
     </div>
 </div>

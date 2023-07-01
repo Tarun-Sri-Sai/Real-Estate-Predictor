@@ -1,0 +1,16 @@
+<h6 *ngFor="let column of columns">
+    <div class="label">
+        <label [for]="column">
+            {{ transformColumnName(column) + ':' }}
+        </label>
+    </div>
+    <div class="select">
+        <ng-select class="border-black top-spacing" [id]="column" [(ngModel)]="selectedOption[column]"
+                   [items]="dataValues[column]" bindLabel="item" bindValue="item" [searchFn]="customSearch"
+                   (change)="getResult()">
+            <ng-template ng-option-tmp let-item="item">
+                {{ item }}
+            </ng-template>
+        </ng-select>
+    </div>
+</h6>
