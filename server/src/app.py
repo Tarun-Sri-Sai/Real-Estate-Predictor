@@ -17,6 +17,9 @@ class App:
         self.catalog = json.load(open(catalog_path, 'r'))
         self.model = pk.load(open(model_path, 'rb'))
 
+        self.processed_input: dict = {}
+        self.price: float = 0
+
     def get_columns(self):
         return self.catalog['columns']
     
@@ -34,10 +37,17 @@ class App:
 
             input_encodings[key] = value
 
-        return input_encodings
+        self.processed_input = input_encodings
 
-    def get_pred(self, input):
+    def get_processed(self):
+        return self.processed_input
+
+    def predict_price(self, input):
         ordered_input = {}
         for column in self.get_columns():
             ordered_input[column] = input[column]
-        return self.model.predict(pd.DataFrame(ordered_input, index=[0]))[0]
+        
+        self.price = self.model.predict(pd.DataFrame(ordered_input, index=[0]))[0]
+
+    def get_price(self):
+        return self.price

@@ -58,27 +58,59 @@ export class InputComponent implements OnInit {
     this.getInputData()
 
     for (let column of this.columns) {
-        if (!this.inputData[column]) {
+      if (!this.inputData[column]) {
         return
       }
     }
 
-    this.http.post<any>('http://localhost:5000/process_input', this.inputData)
+    this.processInput()
+  }
+
+  processInput(): void {
+    this.http.put<any>('http://localhost:5000/process_input', this.inputData)
+      .subscribe({
+        next: (response) => {
+          this.getProcessed()
+        },
+        error: (error) => {
+          console.error("Couldn't process input due to ", error)
+        }
+      })
+  }
+
+  getProcessed(): void {
+    this.http.get<any>('http://localhost:5000/process_input')
       .subscribe({
         next: (response) => {
           this.processedInput = response['processed_input']
-          this.http.post<any>('http://localhost:5000/get_pred', this.processedInput)
-            .subscribe({
-              next: (response) => {
-                this.app.result = response['price_in_lacs']
-              },
-              error: (err) => {
-                console.error('Unable to get price due to ', err)
-              }
-            })
+          this.predictPrice()
         },
-        error: (err) => {
-          console.error('Unable to process input data due to ', err)
+        error: (error) => {
+          console.error("Couldn't retrieve processed input due to ", error)
+        }
+      })
+  }
+
+  predictPrice(): void {
+    this.http.put<any>('http://localhost:5000/predict', this.processedInput)
+      .subscribe({
+        next: (response) => {
+          this.getPrice()
+        },
+        error: (error) => {
+          console.error("Couldn't predict price due to ", error)
+        }
+      })
+  }
+
+  getPrice(): void {
+    this.http.get<any>('http://localhost:5000/predict')
+      .subscribe({
+        next: (response) => {
+          this.app.result = response['price_in_lacs']
+        },
+        error: (error) => {
+          console.error("Couldn't retrieve price due to ", error)
         }
       })
   }
