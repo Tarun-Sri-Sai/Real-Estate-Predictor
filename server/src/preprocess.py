@@ -1,9 +1,11 @@
-import pandas as pd
-import numpy as np
+from pandas import DataFrame as pd_df
+
+from pandas import Series
+from numpy import ndarray
 
 
-def remove(df: pd.DataFrame, columns: list[str]) -> pd.DataFrame:
-    result: pd.DataFrame = pd.DataFrame()
+def remove(df: pd_df, columns: list[str]) -> pd_df:
+    result: pd_df = pd_df()
     for column in df.columns:
         if column in columns:
             continue
@@ -17,8 +19,8 @@ def snake_case(name: str) -> str:
     return '_'.join(name.strip().replace(':', '').lower().split(' '))
 
 
-def rename(df: pd.DataFrame, columns: list[str]) -> pd.DataFrame:
-    result: pd.DataFrame = pd.DataFrame()
+def rename(df: pd_df, columns: list[str]) -> pd_df:
+    result: pd_df = pd_df()
     for column in df.columns:
         if column not in columns:
             result[column] = df[columns]
@@ -29,14 +31,14 @@ def rename(df: pd.DataFrame, columns: list[str]) -> pd.DataFrame:
     return result
 
 
-def string_cols(df: pd.DataFrame) -> list[str]:
+def string_cols(df: pd_df) -> list[str]:
     result: list[str] = [*filter(
         lambda x: df[x].dtype == 'object', df.columns)]
     return result
 
 
-def strip(df: pd.DataFrame, columns: list[str]) -> pd.DataFrame:
-    result: pd.DataFrame = pd.DataFrame()
+def strip(df: pd_df, columns: list[str]) -> pd_df:
+    result: pd_df = pd_df()
     for column in df.columns:
         if column not in columns:
             result[column] = df[column]
@@ -47,8 +49,8 @@ def strip(df: pd.DataFrame, columns: list[str]) -> pd.DataFrame:
     return result
 
 
-def title(df: pd.DataFrame, columns: list[str]) -> pd.DataFrame:
-    result: pd.DataFrame = pd.DataFrame()
+def title(df: pd_df, columns: list[str]) -> pd_df:
+    result: pd_df = pd_df()
     for column in df.columns:
         if column not in columns:
             result[column] = df[column]
@@ -59,10 +61,10 @@ def title(df: pd.DataFrame, columns: list[str]) -> pd.DataFrame:
     return result
 
 
-def create_encodings(column: pd.Series, output: pd.Series):
-    df_temp: pd.DataFrame = pd.DataFrame({'column': column, 'output': output})
-    unique_categories: np.ndarray = df_temp['column'].unique()
-    avg_prices: pd.Series = df_temp.groupby('column')['output'].mean()
+def create_encodings(column: Series, output: Series):
+    df_temp: pd_df = pd_df({'column': column, 'output': output})
+    unique_categories: ndarray = df_temp['column'].unique()
+    avg_prices: Series = df_temp.groupby('column')['output'].mean()
     sorted_categories: list = list(sorted(
         unique_categories, key=lambda x: avg_prices[x]))
     encodings = {
@@ -71,7 +73,7 @@ def create_encodings(column: pd.Series, output: pd.Series):
     return encodings
 
 
-def encode(column: pd.Series, encodings: dict) -> pd.Series:
+def encode(column: Series, encodings: dict) -> Series:
     return column.map(encodings)
 
 
@@ -81,8 +83,8 @@ def get_values(df: dict) -> dict:
     }
 
 
-def remove_outliers(df: pd.DataFrame, columns: list[str], min_count: int) -> pd.DataFrame:
-    result: pd.DataFrame = df
+def remove_outliers(df: pd_df, columns: list[str], min_count: int) -> pd_df:
+    result: pd_df = df
     for column in columns:
         value_counts: dict = result[column].value_counts().to_dict()
         result = result[result[column].apply(

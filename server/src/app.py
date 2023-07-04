@@ -1,21 +1,20 @@
-import pickle as pk
-import pandas as pd
-
-import json
-import os
-import model
+from pickle import load as pk_load
+from json import load as json_load
+from model import main as run_model
+from os import path
+from pandas import DataFrame as pd_df
 
 
 class App:
     def __init__(self):
-        catalog_path: str = os.path.join('..', 'catalog', 'catalog.json')
-        model_path: str = os.path.join('..', 'model', 'model.sav')
+        catalog_path: str = path.join('..', 'catalog', 'catalog.json')
+        model_path: str = path.join('..', 'model', 'model.sav')
 
-        if not any([os.path.isfile(catalog_path), os.path.isfile(model_path)]):
-            model.main()
+        if not any([path.isfile(catalog_path), path.isfile(model_path)]):
+            run_model()
 
-        self.catalog = json.load(open(catalog_path, 'r'))
-        self.model = pk.load(open(model_path, 'rb'))
+        self.catalog = json_load(open(catalog_path, 'r'))
+        self.model = pk_load(open(model_path, 'rb'))
 
         self.processed_input: dict = {}
         self.price: float = 0
@@ -47,7 +46,7 @@ class App:
         for column in self.get_columns():
             ordered_input[column] = input[column]
         
-        self.price = self.model.predict(pd.DataFrame(ordered_input, index=[0]))[0]
+        self.price = self.model.predict(pd_df(ordered_input, index=[0]))[0]
 
     def get_price(self):
         return self.price
