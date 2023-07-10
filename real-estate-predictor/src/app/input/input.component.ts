@@ -22,7 +22,7 @@ export class InputComponent implements OnInit {
   }
 
   getColumns(): void {
-    this.http.get<any>('http://localhost:5000/real_estate_predictor/get_column_names')
+    this.http.get<any>('http://localhost:5000/real_estate_predictor/column_names')
       .subscribe({
         next: (response) => {
           this.columns = response['column_names']
@@ -34,7 +34,7 @@ export class InputComponent implements OnInit {
   }
 
   getDataValues(): void {
-    this.http.get<any>('http://localhost:5000/real_estate_predictor/get_data_values')
+    this.http.get<any>('http://localhost:5000/real_estate_predictor/data_values')
       .subscribe({
         next: (response) => {
           this.dataValues = response['data_values']
@@ -67,7 +67,7 @@ export class InputComponent implements OnInit {
   }
 
   processInput(): void {
-    this.http.put<any>('http://localhost:5000/real_estate_predictor/process_input', this.inputData)
+    this.http.put<any>('http://localhost:5000/real_estate_predictor/input', this.inputData)
       .subscribe({
         next: (response) => {
           this.getProcessed()
@@ -79,7 +79,7 @@ export class InputComponent implements OnInit {
   }
 
   getProcessed(): void {
-    this.http.get<any>('http://localhost:5000/real_estate_predictor/process_input')
+    this.http.get<any>('http://localhost:5000/real_estate_predictor/input')
       .subscribe({
         next: (response) => {
           this.processedInput = response['processed_input']
@@ -92,7 +92,7 @@ export class InputComponent implements OnInit {
   }
 
   predictPrice(): void {
-    this.http.put<any>('http://localhost:5000/real_estate_predictor/predict', this.processedInput)
+    this.http.put<any>('http://localhost:5000/real_estate_predictor/prediction', this.processedInput)
       .subscribe({
         next: (response) => {
           this.getPrice()
@@ -104,7 +104,7 @@ export class InputComponent implements OnInit {
   }
 
   getPrice(): void {
-    this.http.get<any>('http://localhost:5000/real_estate_predictor/predict')
+    this.http.get<any>('http://localhost:5000/real_estate_predictor/prediction')
       .subscribe({
         next: (response) => {
           this.app.result = response['price_in_lacs']
