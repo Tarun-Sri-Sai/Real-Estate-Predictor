@@ -28,7 +28,6 @@ class App:
 
     def process_input(self, input):
         input_encodings = {}
-        print(f'{input_encodings=}')
         for key, value in input.items():
             if key in self.headers['encoding_variables']:
                 value = self.headers['encodings'][key][input[key]]
