@@ -34,7 +34,7 @@ def price_to_lacs(text):
 def run_model():
     # Reading the CSV file
     try:
-        data_dir = path.join('..', 'data', 'real_estate_predictor')
+        data_dir = path.join('..', 'data')
         data_path = path.join(data_dir, 'data.csv')
         df = read_csv(data_path)
     except FileNotFoundError as exc:
