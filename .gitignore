@@ -2,5 +2,4 @@
 server/src/__pycache__/
 
 # App files
-server/model/
-server/catalog/
+server/cache/
