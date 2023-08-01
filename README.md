@@ -22,7 +22,7 @@ Real Estate Predictor is an application that can predict the price of a plot bas
 - For Windows, navigating to the repository in Command Prompt and running the following command will finish setup:
 
     ```bash
-    setup
+    build
     ```
 
 ## Usage
@@ -30,7 +30,7 @@ Real Estate Predictor is an application that can predict the price of a plot bas
 - For Windows, navigating to the repository in Command Prompt and running the following command will launch a test version of the application at <localhost:4200>:
 
     ```bash
-    launch
+    start
     ```
 
 - The application automatically detects when all the fields have been selected.
