@@ -1,41 +1,40 @@
 from pickle import load as pk_load
 from json import load as json_load
-from model import main as run_model
+from model import run_model
 from os import path
-from pandas import DataFrame as pd_df
+from pandas import DataFrame
 
 
 class App:
     def __init__(self):
-        catalog_path: str = path.join('..', 'catalog', 'catalog.json')
-        model_path: str = path.join('..', 'model', 'model.sav')
-
-        if not any([path.isfile(catalog_path), path.isfile(model_path)]):
+        cache_dir = path.join('..', 'cache')
+        headers_path = path.join(cache_dir, 'headers.json')
+        model_path = path.join(cache_dir, 'model.sav')
+        if not any([path.isfile(headers_path), path.isfile(model_path)]):
             run_model()
-
-        self.catalog = json_load(open(catalog_path, 'r'))
+        else:
+            print(f'Reading headers from {headers_path}')
+            print(f'Reading model from {model_path}')
+        self.headers = json_load(open(headers_path, 'r'))
         self.model = pk_load(open(model_path, 'rb'))
-
-        self.processed_input: dict = {}
-        self.price: float = 0
+        self.processed_input = {}
+        self.price = 0
 
     def get_columns(self):
-        return self.catalog['columns']
+        return self.headers['columns']
     
     def get_data_values(self):
-        return self.catalog['data_values']
+        return self.headers['data_values']
 
-    def process_input(self, input: dict):
+    def process_input(self, input):
         input_encodings = {}
+        print(f'{input_encodings=}')
         for key, value in input.items():
-            input_encodings[key] = value
-            if key in self.catalog['encoding_variables']:
-                value = self.catalog['encodings'][key][input_encodings[key]]
+            if key in self.headers['encoding_variables']:
+                value = self.headers['encodings'][key][input[key]]
             else:
-                value = float(input_encodings[key])
-
+                value = float(input[key])
             input_encodings[key] = value
-
         self.processed_input = input_encodings
 
     def get_processed(self):
@@ -45,8 +44,7 @@ class App:
         ordered_input = {}
         for column in self.get_columns():
             ordered_input[column] = input[column]
-        
-        self.price = self.model.predict(pd_df(ordered_input, index=[0]))[0]
+        self.price = self.model.predict(DataFrame(ordered_input, index=[0]))[0]
 
     def get_price(self):
         return self.price

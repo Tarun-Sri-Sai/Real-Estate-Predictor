@@ -1,44 +1,45 @@
-from sklearn.linear_model import LinearRegression as sk_lr
+from sklearn.linear_model import LinearRegression
 from json import dump as json_dump
 from pickle import dump as pk_dump
-from pandas import DataFrame as pd_df
+from pandas import DataFrame
 from preprocess import rename as pp_rename, strip as pp_strip, remove as pp_remove, title as pp_title
-
 from preprocess import encode, create_encodings, get_values, string_cols, remove_outliers
 from pandas import read_csv
-from os import path, mkdir
+from os import path, makedirs, getcwd
 
 
-def get_plot_type(text: str) -> str:
+def get_plot_type(text):
     text = text.strip()
     if 'BHK' in text:
         return text.split('BHK')[1].strip()
-
     if 'RK' in text:
         return text.split('RK')[1].strip()
-
     return text.strip()
 
 
-def get_bhk(text: str) -> int:
+def get_bhk(text):
     result = text.strip().replace(get_plot_type(text), '')
     if result == '':
         return 0
-
     return int(result.split()[0])
 
 
-def price_to_lacs(text: str) -> float:
+def price_to_lacs(text):
     text = text.strip()
     if 'L' in text:
         return int(float(text.split()[0]))
-
     return int(float(text.split()[0]) * 100)
 
 
-def main():
+def run_model():
     # Reading the CSV file
-    df: pd_df = read_csv(path.join('..', 'data', 'data.csv'))
+    try:
+        data_dir = path.join('..', 'data', 'real_estate_predictor')
+        data_path = path.join(data_dir, 'data.csv')
+        df = read_csv(data_path)
+    except FileNotFoundError as exc:
+        print(f'{type(exc).__name__}: {getcwd()} -> {data_path}')
+        exit()
 
     # Preprocessing the dataframe columns
     df = pp_rename(df, df.columns)
@@ -71,10 +72,9 @@ def main():
             df[column], df['total_price'])
 
     # Creating a numeric dataframe
-    df_num = pd_df()
+    df_num = DataFrame()
     for column in encoding_variables:
         df_num[column] = encode(df[column], encodings[column])
-
     df_num.insert(3, 'bhk/rk', df['bhk/rk'])
     df_num.insert(6, 'area_sqft', df['area_sqft'])
     df_num.insert(8, 'total_price', df['total_price'])
@@ -85,28 +85,24 @@ def main():
     # Model training
     X = df_fil.iloc[:, [2, 3, 4, 6, 7]]
     Y = df_fil.iloc[:, -1]
-    model = sk_lr()
+    model = LinearRegression()
     model.fit(X, Y)
 
     # Creating necessary directories
-    catalog_dir: str = path.join('..', 'catalog')
-    model_dir: str = path.join('..', 'model')
-
-    mkdir(catalog_dir)
-    mkdir(model_dir)
+    cache_dir = path.join('..', 'cache')
+    makedirs(cache_dir)
 
     # Saving the model
-    with open(path.join(catalog_dir, 'catalog.json'), 'w') as catalog_writer:
+    headers_path = path.join(cache_dir, 'headers.json')
+    model_path = path.join(cache_dir, 'model.sav')
+    print(f'Writing headers to {headers_path}')
+    with open(headers_path, 'w') as headers_writer:
         json_dump({
             'encoding_variables': encoding_variables,
             'encodings': encodings,
             'data_values': get_values(df.to_dict()),
             'columns': X.columns.tolist()
-        }, catalog_writer, indent=4)
-
-    with open(path.join(model_dir, 'model.sav'), 'wb') as model_writer:
+        }, headers_writer, indent=4)
+    print(f'Writing model to {model_path}')
+    with open(model_path, 'wb') as model_writer:
         pk_dump(model, model_writer)
-
-
-if __name__ == "__main__":
-    main()
