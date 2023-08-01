@@ -69,7 +69,7 @@ export class InputComponent implements OnInit {
   processInput(): void {
     this.http.put<any>('http://localhost:5000/real_estate_predictor/input', this.inputData)
       .subscribe({
-        next: (response) => {
+        next: () => {
           this.getProcessed()
         },
         error: (error) => {
@@ -94,7 +94,7 @@ export class InputComponent implements OnInit {
   predictPrice(): void {
     this.http.put<any>('http://localhost:5000/real_estate_predictor/prediction', this.processedInput)
       .subscribe({
-        next: (response) => {
+        next: () => {
           this.getPrice()
         },
         error: (error) => {
@@ -123,5 +123,9 @@ export class InputComponent implements OnInit {
 
   customSearch(term: string, item: any): boolean {
     return item.toString().toLowerCase().includes(term.toLowerCase())
+  }
+
+  isEncoded(column: string): boolean {
+    return this.dataValues.hasOwnProperty(column);
   }
 }

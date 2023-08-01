@@ -28,8 +28,11 @@ def input_endpoint():
     match method:
         case 'PUT':
             input_data = fl.request.get_json()
-            real_app.process_input(input_data)
-            return fl.jsonify({'message': 'Success'}), 200
+            try:
+                real_app.process_input(input_data)
+                return fl.jsonify({'message': 'Success'}), 200
+            except ValueError:
+                return fl.jsonify({'message': 'Bad Request'}), 400
         
         case 'GET':
             processed_input = real_app.get_processed()

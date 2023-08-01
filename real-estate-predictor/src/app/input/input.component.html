@@ -4,7 +4,7 @@
             {{ transformColumnName(column) + ':' }}
         </label>
     </div>
-    <div class="select">
+    <div *ngIf="isEncoded(column)" class="select">
         <ng-select class="border-black top-spacing" [id]="column" [(ngModel)]="selectedOption[column]"
                    [items]="dataValues[column]" bindLabel="item" bindValue="item" [searchFn]="customSearch"
                    (change)="getResult()">
@@ -12,5 +12,8 @@
                 {{ item }}
             </ng-template>
         </ng-select>
+    </div>
+    <div *ngIf="!isEncoded(column)">
+        <input class="border-black top-spacing fill-width" type="text" [(ngModel)]="selectedOption[column]" (change)="getResult()">
     </div>
 </h6>

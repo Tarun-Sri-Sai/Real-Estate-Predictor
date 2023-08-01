@@ -100,7 +100,7 @@ def run_model():
         json_dump({
             'encoding_variables': encoding_variables,
             'encodings': encodings,
-            'data_values': get_values(df.to_dict()),
+            'data_values': get_values(df[encoding_variables].to_dict()),
             'columns': X.columns.tolist()
         }, headers_writer, indent=4)
     print(f'Writing model to {model_path}')
