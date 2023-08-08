@@ -10,9 +10,14 @@ import { ResultComponent } from './result/result.component';
 import { InputComponent } from './input/input.component';
 
 @NgModule({
-  declarations: [AppComponent, TitleComponent, ResultComponent, InputComponent],
-  imports: [BrowserModule, HttpClientModule, FormsModule, NgSelectModule],
-  providers: [],
-  bootstrap: [AppComponent],
+    declarations: [
+        AppComponent,
+        TitleComponent,
+        ResultComponent,
+        InputComponent,
+    ],
+    imports: [BrowserModule, HttpClientModule, FormsModule, NgSelectModule],
+    providers: [],
+    bootstrap: [AppComponent],
 })
 export class AppModule {}
