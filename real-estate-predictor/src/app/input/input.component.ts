@@ -3,129 +3,105 @@ import { AppService } from '../app.service'
 import { HttpClient } from '@angular/common/http'
 
 @Component({
-  selector: 'app-input',
-  templateUrl: './input.component.html',
-  styleUrls: ['./input.component.css']
+    selector: 'app-input',
+    templateUrl: './input.component.html',
+    styleUrls: ['./input.component.css']
 })
 export class InputComponent implements OnInit {
-  columns: string[] = []
-  dataValues: { [column: string]: any[] } = {}
-  inputData: { [column: string]: any } = {}
-  processedInput: { [column: string]: any[] } = {}
-  selectedOption: { [column: string]: any } = {}
+    columns: string[] = []
+    dataValues: { [column: string]: any[] } = {}
+    inputData: { [column: string]: any } = {}
+    processedInput: { [column: string]: any[] } = {}
+    selectedOption: { [column: string]: any } = {}
 
-  constructor(private http: HttpClient, public app: AppService) { }
+    constructor(private http: HttpClient, public app: AppService) { }
 
-  ngOnInit() {
-    this.getColumns()
-    this.getDataValues()
-  }
-
-  getColumns(): void {
-    this.http.get<any>('http://localhost:5000/real_estate_predictor/column_names')
-      .subscribe({
-        next: (response) => {
-          this.columns = response['column_names']
-        },
-        error: (err) => {
-          console.error('Unable to receive columns due to ', err)
-        }
-      })
-  }
-
-  getDataValues(): void {
-    this.http.get<any>('http://localhost:5000/real_estate_predictor/data_values')
-      .subscribe({
-        next: (response) => {
-          this.dataValues = response['data_values']
-        },
-        error: (err) => {
-          console.error('Unable to receive data values due to ', err)
-        }
-      })
-  }
-
-  transformColumnName(column: string): string {
-    return column.split('_').map((word) => {
-      if (word.includes('/')) {
-        return word.toUpperCase()
-      }
-      return word.charAt(0).toUpperCase() + word.slice(1)
-    }).join(' ')
-  }
-
-  getResult(): void {
-    this.getInputData()
-
-    for (let column of this.columns) {
-      if (!this.inputData[column]) {
-        return
-      }
+    ngOnInit() {
+        this.getColumns()
+        this.getDataValues()
     }
 
-    this.processInput()
-  }
-
-  processInput(): void {
-    this.http.put<any>('http://localhost:5000/real_estate_predictor/input', this.inputData)
-      .subscribe({
-        next: () => {
-          this.getProcessed()
-        },
-        error: (error) => {
-          console.error("Couldn't process input due to ", error)
-        }
-      })
-  }
-
-  getProcessed(): void {
-    this.http.get<any>('http://localhost:5000/real_estate_predictor/input')
-      .subscribe({
-        next: (response) => {
-          this.processedInput = response['processed_input']
-          this.predictPrice()
-        },
-        error: (error) => {
-          console.error("Couldn't retrieve processed input due to ", error)
-        }
-      })
-  }
-
-  predictPrice(): void {
-    this.http.put<any>('http://localhost:5000/real_estate_predictor/prediction', this.processedInput)
-      .subscribe({
-        next: () => {
-          this.getPrice()
-        },
-        error: (error) => {
-          console.error("Couldn't predict price due to ", error)
-        }
-      })
-  }
-
-  getPrice(): void {
-    this.http.get<any>('http://localhost:5000/real_estate_predictor/prediction')
-      .subscribe({
-        next: (response) => {
-          this.app.result = response['price_in_lacs']
-        },
-        error: (error) => {
-          console.error("Couldn't retrieve price due to ", error)
-        }
-      })
-  }
-
-  getInputData(): void {
-    for (let column of this.columns) {
-      this.inputData[column] = this.selectedOption[column]
+    getColumns(): void {
+        this.http.get<any>('http://localhost:5000/real_estate_predictor/column_names')
+            .subscribe({
+                next: (response) => {
+                    this.columns = response['column_names']
+                },
+                error: (err) => {
+                    console.error('Unable to receive columns due to ', err)
+                }
+            })
     }
-  }
 
-  customSearch(term: string, item: any): boolean {
-    return item.toString().toLowerCase().includes(term.toLowerCase())
-  }
+    getDataValues(): void {
+        this.http.get<any>('http://localhost:5000/real_estate_predictor/data_values')
+            .subscribe({
+                next: (response) => {
+                    this.dataValues = response['data_values']
+                },
+                error: (err) => {
+                    console.error('Unable to receive data values due to ', err)
+                }
+            })
+    }
 
-  isEncoded(column: string): boolean {
-    return this.dataValues.hasOwnProperty(column);
-  }
+    transformColumnName(column: string): string {
+        return column.split('_').map((word) => {
+            if (word.includes('/')) {
+                return word.toUpperCase()
+            }
+            return word.charAt(0).toUpperCase() + word.slice(1)
+        }).join(' ')
+    }
+
+    getResult(): void {
+        this.getInputData()
+
+        for (let column of this.columns) {
+            if (!this.inputData[column]) {
+                return
+            }
+        }
+
+        this.processInput()
+    }
+
+    processInput(): void {
+        this.http.post<any>('http://localhost:5000/real_estate_predictor/input', this.inputData)
+            .subscribe({
+                next: (response) => {
+                    this.processedInput = response['processed_input']
+                    this.predictPrice()
+                },
+                error: (error) => {
+                    console.error("Couldn't post input due to ", error)
+                }
+            })
+    }
+
+    predictPrice(): void {
+        this.http.post<any>('http://localhost:5000/real_estate_predictor/prediction', this.processedInput)
+            .subscribe({
+                next: (response) => {
+                    this.app.result = response['price_in_lacs']
+                },
+                error: (error) => {
+                    console.error("Couldn't predict price due to ", error)
+                }
+            })
+    }
+
+    getInputData(): void {
+        for (let column of this.columns) {
+            this.inputData[column] = this.selectedOption[column]
+        }
+    }
+
+    customSearch(term: string, item: any): boolean {
+        return item.toString().toLowerCase().includes(term.toLowerCase())
+    }
+
+    isEncoded(column: string): boolean {
+        return this.dataValues.hasOwnProperty(column);
+    }
 }

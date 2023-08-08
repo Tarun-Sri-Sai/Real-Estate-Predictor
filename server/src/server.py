@@ -1,11 +1,10 @@
 from app import App
 
-import flask as fl
-import flask_cors as fc
+from flask import Flask, request
+from flask_cors import CORS
 
-
-flask_app = fl.Flask(__name__)
-fc.CORS(flask_app)
+flask_app = Flask(__name__)
+CORS(flask_app)
 real_app = App()
 
 
@@ -21,37 +20,20 @@ def data_values_endpoint():
     return {'data_values': data_values}
 
 
-@flask_app.route('/real_estate_predictor/input', methods=['PUT', 'GET'])
+@flask_app.route('/real_estate_predictor/input', methods=['POST'])
 def input_endpoint():
-    method = fl.request.method
-
-    match method:
-        case 'PUT':
-            input_data = fl.request.get_json()
-            try:
-                real_app.process_input(input_data)
-                return fl.jsonify({'message': 'Success'}), 200
-            except ValueError:
-                return fl.jsonify({'message': 'Bad Request'}), 400
-        
-        case 'GET':
-            processed_input = real_app.get_processed()
-            return {'processed_input': processed_input}
+    input_data = request.json
+    real_app.process_input(input_data)
+    processed_input = real_app.get_processed()
+    return {'processed_input': processed_input}
 
 
-@flask_app.route('/real_estate_predictor/prediction', methods=['PUT', 'GET'])
+@flask_app.route('/real_estate_predictor/prediction', methods=['POST'])
 def prediction_endpoint():
-    method = fl.request.method
-    
-    match method:
-        case 'PUT':
-            processed_input = fl.request.get_json()
-            real_app.predict_price(processed_input)
-            return fl.jsonify({'message': 'Success'}), 200
-        
-        case 'GET':
-            price_in_lacs = real_app.get_price()
-            return {'price_in_lacs': price_in_lacs}
+    processed_input = request.json
+    real_app.predict_price(processed_input)
+    price_in_lacs = real_app.get_price()
+    return {'price_in_lacs': price_in_lacs}
 
 
 if __name__ == '__main__':
