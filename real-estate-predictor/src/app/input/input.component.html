@@ -1,4 +1,4 @@
-<h6 *ngFor="let column of columns">
+<h6 *ngFor="let column of columnsService.getColumns()">
   <div class="label">
     <label [for]="column">
       {{ transformColumnName(column) + ":" }}
@@ -9,11 +9,11 @@
       class="form-select top-spacing"
       [id]="column"
       [(ngModel)]="selectedOption[column]"
-      [items]="dataValues[column]"
+      [items]="dataValuesService.getDataValues()[column]"
       bindLabel="item"
       bindValue="item"
       [searchFn]="customSearch"
-      (change)="getResult()"
+      (change)="sendInput()"
     >
       <ng-template ng-option-tmp let-item="item">{{ item }}</ng-template>
     </ng-select>
@@ -23,7 +23,7 @@
       class="input top-spacing"
       type="text"
       [(ngModel)]="selectedOption[column]"
-      (change)="getResult()"
+      (change)="sendInput()"
     />
   </div>
 </h6>

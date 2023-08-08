@@ -1,51 +1,24 @@
-import { Component, OnInit } from '@angular/core';
-import { AppService } from '../app.service';
-import { HttpClient } from '@angular/common/http';
+import { Component } from '@angular/core';
+import { ColumnsService } from '../columns.service';
+import { DataValuesService } from '../data-values.service';
+import { InputService } from '../input.service';
+import { PriceService } from '../price.service';
 
 @Component({
   selector: 'app-input',
   templateUrl: './input.component.html',
   styleUrls: ['./input.component.css'],
 })
-export class InputComponent implements OnInit {
-  columns: string[] = [];
-  dataValues: { [column: string]: any[] } = {};
+export class InputComponent {
   inputData: { [column: string]: any } = {};
-  processedInput: { [column: string]: any[] } = {};
   selectedOption: { [column: string]: any } = {};
 
-  constructor(private http: HttpClient, public app: AppService) {}
-
-  ngOnInit() {
-    this.getColumns();
-    this.getDataValues();
-  }
-
-  getColumns(): void {
-    this.http
-      .get<any>('http://localhost:5000/real_estate_predictor/column_names')
-      .subscribe({
-        next: (response) => {
-          this.columns = response['column_names'];
-        },
-        error: (err) => {
-          console.error('Unable to receive columns due to ', err);
-        },
-      });
-  }
-
-  getDataValues(): void {
-    this.http
-      .get<any>('http://localhost:5000/real_estate_predictor/data_values')
-      .subscribe({
-        next: (response) => {
-          this.dataValues = response['data_values'];
-        },
-        error: (err) => {
-          console.error('Unable to receive data values due to ', err);
-        },
-      });
-  }
+  constructor(
+    public columnsService: ColumnsService,
+    public dataValuesService: DataValuesService,
+    private inputService: InputService,
+    private priceService: PriceService
+  ) {}
 
   transformColumnName(column: string): string {
     return column
@@ -59,53 +32,18 @@ export class InputComponent implements OnInit {
       .join(' ');
   }
 
-  getResult(): void {
+  sendInput(): void {
     this.getInputData();
-
-    for (let column of this.columns) {
+    for (let column of this.columnsService.getColumns()) {
       if (!this.inputData[column]) {
         return;
       }
     }
-
-    this.processInput();
-  }
-
-  processInput(): void {
-    this.http
-      .post<any>(
-        'http://localhost:5000/real_estate_predictor/input',
-        this.inputData
-      )
-      .subscribe({
-        next: (response) => {
-          this.processedInput = response['processed_input'];
-          this.predictPrice();
-        },
-        error: (error) => {
-          console.error("Couldn't post input due to ", error);
-        },
-      });
-  }
-
-  predictPrice(): void {
-    this.http
-      .post<any>(
-        'http://localhost:5000/real_estate_predictor/prediction',
-        this.processedInput
-      )
-      .subscribe({
-        next: (response) => {
-          this.app.result = response['price_in_lacs'];
-        },
-        error: (error) => {
-          console.error("Couldn't predict price due to ", error);
-        },
-      });
+    this.priceService.predictPrice(this.inputData);
   }
 
   getInputData(): void {
-    for (let column of this.columns) {
+    for (let column of this.columnsService.getColumns()) {
       this.inputData[column] = this.selectedOption[column];
     }
   }
@@ -115,6 +53,6 @@ export class InputComponent implements OnInit {
   }
 
   isEncoded(column: string): boolean {
-    return this.dataValues.hasOwnProperty(column);
+    return this.dataValuesService.getDataValues().hasOwnProperty(column);
   }
 }
