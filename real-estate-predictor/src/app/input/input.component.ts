@@ -16,7 +16,6 @@ export class InputComponent {
     constructor(
         public columnsService: ColumnsService,
         public dataValuesService: DataValuesService,
-        private inputService: InputService,
         private priceService: PriceService
     ) {}
 
