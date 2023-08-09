@@ -7,7 +7,7 @@ from pandas import DataFrame
 
 class App:
     def __init__(self):
-        cache_dir = path.join('..', 'cache')
+        cache_dir = path.join('..', '..', 'cache')
         headers_path = path.join(cache_dir, 'headers.json')
         model_path = path.join(cache_dir, 'model.sav')
         if not any([path.isfile(headers_path), path.isfile(model_path)]):

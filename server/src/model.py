@@ -34,7 +34,7 @@ def price_to_lacs(text):
 def run_model():
     # Reading the CSV file
     try:
-        data_dir = path.join('..', 'data')
+        data_dir = path.join('..', '..', 'data')
         data_path = path.join(data_dir, 'data.csv')
         df = read_csv(data_path)
     except FileNotFoundError as exc:
@@ -89,7 +89,7 @@ def run_model():
     model.fit(X, Y)
 
     # Creating necessary directories
-    cache_dir = path.join('..', 'cache')
+    cache_dir = path.join('..', '..', 'cache')
     makedirs(cache_dir)
 
     # Saving the model
