@@ -1,5 +1,1 @@
-# Editor generated files
-src/__pycache__/
-
-# App files
-cache/
+__pycache__/
