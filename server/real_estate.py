@@ -5,7 +5,7 @@ from os import path
 from pandas import DataFrame
 
 
-class App:
+class RealEstate:
     def __init__(self):
         cache_dir = path.join('..', 'data', 'cache')
         headers_path = path.join(cache_dir, 'headers.json')
@@ -15,10 +15,9 @@ class App:
         else:
             print(f'Reading headers from {headers_path}')
             print(f'Reading model from {model_path}')
+
         self.headers = json_load(open(headers_path, 'r'))
         self.model = pk_load(open(model_path, 'rb'))
-        self.processed_input = {}
-        self.price = 0
 
     def get_columns(self):
         return self.headers['columns']
@@ -33,17 +32,14 @@ class App:
                 value = self.headers['encodings'][key][input[key]]
             else:
                 value = float(input[key])
-            input_encodings[key] = value
-        self.processed_input = input_encodings
 
-    def get_processed(self):
-        return self.processed_input
+            input_encodings[key] = value
+
+        return input_encodings
 
     def predict_price(self, input):
         ordered_input = {}
         for column in self.get_columns():
             ordered_input[column] = input[column]
-        self.price = self.model.predict(DataFrame(ordered_input, index=[0]))[0]
 
-    def get_price(self):
-        return self.price
+        return self.model.predict(DataFrame(ordered_input, index=[0]))[0]

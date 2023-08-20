@@ -5,5 +5,5 @@ start cmd /k ^
     "& python server.py"
 
 start cmd /k ^
-    "cd real-estate-predictor" ^
+    "cd frontend" ^
     "& npm start"

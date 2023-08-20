@@ -5,7 +5,7 @@ start cmd /k ^
     "& exit"
 
 start cmd /k ^
-    "cd real-estate-predictor" ^
+    "cd frontend" ^
     "& npm install" ^
     "& npm install @angular/cli" ^
     "& npm audit fix" ^
