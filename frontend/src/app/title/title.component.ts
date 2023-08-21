@@ -2,7 +2,13 @@ import { Component } from '@angular/core';
 
 @Component({
   selector: 'app-title',
-  templateUrl: './title.component.html',
-  styleUrls: ['./title.component.css'],
+  template: `
+    <h2 class="horizontal-center top-spacing">Real Estate Price Predictor</h2>
+
+  `,
+  styles: [`
+
+  `],
 })
 export class TitleComponent {}
+

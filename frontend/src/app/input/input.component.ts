@@ -6,8 +6,58 @@ import { PriceService } from '../price.service';
 
 @Component({
   selector: 'app-input',
-  templateUrl: './input.component.html',
-  styleUrls: ['./input.component.css'],
+  template: `
+    <h6 *ngFor="let column of columnsService.getColumns()">
+      <div class="label">
+        <label [for]="column">
+          {{ transformColumnName(column) + ":" }}
+        </label>
+      </div>
+      <div *ngIf="isEncoded(column)">
+        <ng-select
+          class="form-select top-spacing"
+          [id]="column"
+          [(ngModel)]="selectedOption[column]"
+          [items]="dataValuesService.getDataValues()[column]"
+          bindLabel="item"
+          bindValue="item"
+          [searchFn]="customSearch"
+          (change)="sendInput()"
+        >
+          <ng-template ng-option-tmp let-item="item">{{ item }}</ng-template>
+        </ng-select>
+      </div>
+      <div *ngIf="!isEncoded(column)">
+        <input
+          class="input top-spacing"
+          type="text"
+          [(ngModel)]="selectedOption[column]"
+          (change)="sendInput()"
+        />
+      </div>
+    </h6>
+
+  `,
+  styles: [`
+    .form-select ::ng-deep .ng-dropdown-panel {
+      border: 1px solid rgba(0, 0, 0, 0.25);
+      border-radius: 5px;
+      background-color: #ffffff;
+      margin-left: -12px;
+    }
+
+    .form-select ::ng-deep .ng-dropdown-panel .ng-option {
+      padding: 8px;
+    }
+
+    .input {
+      border: 1px solid rgba(0, 0, 0, 0.1);
+      border-radius: 5px;
+      padding: 8px;
+      width: 100%;
+    }
+
+  `],
 })
 export class InputComponent {
   inputData: { [column: string]: any } = {};
@@ -55,3 +105,4 @@ export class InputComponent {
     return this.dataValuesService.getDataValues().hasOwnProperty(column);
   }
 }
+
