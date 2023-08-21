@@ -1,9 +1,9 @@
 @echo off
 
 start cmd /k ^
-    "cd server" ^
-    "& python server.py"
+"cd server" ^
+"& python server.py"
 
 start cmd /k ^
-    "cd frontend" ^
-    "& npm start"
+"cd frontend" ^
+"& npm start"
