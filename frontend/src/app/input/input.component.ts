@@ -5,53 +5,53 @@ import { InputService } from '../input.service';
 import { PriceService } from '../price.service';
 
 @Component({
-    selector: 'app-input',
-    templateUrl: './input.component.html',
-    styleUrls: ['./input.component.css'],
+  selector: 'app-input',
+  templateUrl: './input.component.html',
+  styleUrls: ['./input.component.css'],
 })
 export class InputComponent {
-    inputData: { [column: string]: any } = {};
-    selectedOption: { [column: string]: any } = {};
+  inputData: { [column: string]: any } = {};
+  selectedOption: { [column: string]: any } = {};
 
-    constructor(
-        public columnsService: ColumnsService,
-        public dataValuesService: DataValuesService,
-        private priceService: PriceService
-    ) {}
+  constructor(
+    public columnsService: ColumnsService,
+    public dataValuesService: DataValuesService,
+    private priceService: PriceService
+  ) {}
 
-    transformColumnName(column: string): string {
-        return column
-            .split('_')
-            .map((word) => {
-                if (word.includes('/')) {
-                    return word.toUpperCase();
-                }
-                return word.charAt(0).toUpperCase() + word.slice(1);
-            })
-            .join(' ');
-    }
-
-    sendInput(): void {
-        this.getInputData();
-        for (let column of this.columnsService.getColumns()) {
-            if (!this.inputData[column]) {
-                return;
-            }
+  transformColumnName(column: string): string {
+    return column
+      .split('_')
+      .map((word) => {
+        if (word.includes('/')) {
+          return word.toUpperCase();
         }
-        this.priceService.predictPrice(this.inputData);
-    }
+        return word.charAt(0).toUpperCase() + word.slice(1);
+      })
+      .join(' ');
+  }
 
-    getInputData(): void {
-        for (let column of this.columnsService.getColumns()) {
-            this.inputData[column] = this.selectedOption[column];
-        }
+  sendInput(): void {
+    this.getInputData();
+    for (let column of this.columnsService.getColumns()) {
+      if (!this.inputData[column]) {
+        return;
+      }
     }
+    this.priceService.predictPrice(this.inputData);
+  }
 
-    customSearch(term: string, item: any): boolean {
-        return item.toString().toLowerCase().includes(term.toLowerCase());
+  getInputData(): void {
+    for (let column of this.columnsService.getColumns()) {
+      this.inputData[column] = this.selectedOption[column];
     }
+  }
 
-    isEncoded(column: string): boolean {
-        return this.dataValuesService.getDataValues().hasOwnProperty(column);
-    }
+  customSearch(term: string, item: any): boolean {
+    return item.toString().toLowerCase().includes(term.toLowerCase());
+  }
+
+  isEncoded(column: string): boolean {
+    return this.dataValuesService.getDataValues().hasOwnProperty(column);
+  }
 }

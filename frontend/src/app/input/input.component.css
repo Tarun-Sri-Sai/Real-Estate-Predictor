@@ -1,17 +1,17 @@
 .form-select ::ng-deep .ng-dropdown-panel {
-    border: 1px solid rgba(0, 0, 0, 0.25);
-    border-radius: 5px;
-    background-color: #ffffff;
-    margin-left: -12px;
+  border: 1px solid rgba(0, 0, 0, 0.25);
+  border-radius: 5px;
+  background-color: #ffffff;
+  margin-left: -12px;
 }
 
 .form-select ::ng-deep .ng-dropdown-panel .ng-option {
-    padding: 8px;
+  padding: 8px;
 }
 
 .input {
-    border: 1px solid rgba(0, 0, 0, 0.1);
-    border-radius: 5px;
-    padding: 8px;
-    width: 100%;
+  border: 1px solid rgba(0, 0, 0, 0.1);
+  border-radius: 5px;
+  padding: 8px;
+  width: 100%;
 }
