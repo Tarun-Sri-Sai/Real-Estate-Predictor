@@ -23,16 +23,14 @@ def data_values_endpoint():
 @server.route('/real_estate_predictor/input', methods=['POST'])
 def input_endpoint():
     input_data = request.json
-    real_estate.process_input(input_data)
-    processed_input = real_estate.get_processed()
+    processed_input = real_estate.process_input(input_data)
     return {'processed_input': processed_input}
 
 
 @server.route('/real_estate_predictor/prediction', methods=['POST'])
 def prediction_endpoint():
     processed_input = request.json
-    real_estate.predict_price(processed_input)
-    price_in_lacs = real_estate.get_price()
+    price_in_lacs = real_estate.predict_price(processed_input)
     return {'price_in_lacs': price_in_lacs}
 
 
