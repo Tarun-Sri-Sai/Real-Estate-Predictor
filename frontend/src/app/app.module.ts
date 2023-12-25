@@ -5,9 +5,9 @@ import { FormsModule } from '@angular/forms';
 import { NgSelectModule } from '@ng-select/ng-select';
 
 import { AppComponent } from './app.component';
-import { TitleComponent } from './title/title.component';
-import { ResultComponent } from './result/result.component';
-import { InputComponent } from './input/input.component';
+import { TitleComponent } from './title.component';
+import { ResultComponent } from './result.component';
+import { InputComponent } from './input.component';
 
 @NgModule({
   declarations: [AppComponent, TitleComponent, ResultComponent, InputComponent],
