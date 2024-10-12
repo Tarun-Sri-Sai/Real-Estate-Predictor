@@ -1,0 +1,18 @@
+services:
+  nginx:
+    build:
+      context: frontend
+      dockerfile: Dockerfile
+    depends_on:
+      - server
+    ports:
+      - "80:80"
+    volumes:
+      - ./nginx/nginx.conf:/etc/nginx/nginx.conf:ro
+
+  server:
+    build:
+      context: server
+      dockerfile: Dockerfile
+    volumes:
+      - ./server/data:/app/server/data
