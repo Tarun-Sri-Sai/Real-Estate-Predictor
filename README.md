@@ -12,14 +12,20 @@ This project requires the following software:
 
 ## Usage
 
-Open Docker Desktop and run the following command in the terminal at the root of this repository:
+1. Extract `server/data.zip` into `server`.
 
-```bash
-docker compose up --build
-```
+   ```bash
+   7z x "server/data.zip" -o"server"
+   ```
 
-To stop the container, run the following command:
+2. Open Docker Desktop and run the following command in the terminal at the root of this repository:
 
-```bash
-docker compose down
-```
+   ```bash
+   docker compose up --build
+   ```
+
+   To stop the container, run the following command:
+
+   ```bash
+   docker compose down
+   ```

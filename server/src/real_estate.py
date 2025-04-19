@@ -2,16 +2,11 @@ import pickle
 import json
 from os import path
 from pandas import DataFrame as pd_df
-from zipfile import ZipFile
 from . import model
 
 
 class RealEstate:
     def __init__(self):
-        if not path.isdir('data') and path.isfile('data.zip'):
-            with ZipFile('data.zip', 'r') as f:
-                f.extractall()
-
         cache_dir = path.join('data', 'cache')
         headers_path = path.join(cache_dir, 'headers.json')
         model_path = path.join(cache_dir, 'model.sav')
