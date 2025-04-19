@@ -2,10 +2,9 @@ from sklearn.linear_model import LinearRegression
 from json import dump as json_dump
 from pickle import dump as pk_dump
 from pandas import DataFrame
-from preprocess import rename as pp_rename, strip as pp_strip, remove as pp_remove, title as pp_title
-from preprocess import encode, create_encodings, get_values, string_cols, remove_outliers
 from pandas import read_csv
 from os import path, makedirs, getcwd
+from . import preprocess
 
 
 def get_plot_type(text):
@@ -42,18 +41,18 @@ def run_model():
         exit()
 
     # Preprocessing the dataframe columns
-    df = pp_rename(df, df.columns)
-    df = pp_strip(df, string_cols(df))
+    df = preprocess.rename(df, df.columns)
+    df = preprocess.strip(df, preprocess.string_cols(df))
 
     # Extracting plot type from BHK
     df.insert(4, 'plot_type', df['bhk'].apply(get_plot_type))
     df.insert(5, 'bhk/rk', df['bhk'].apply(get_bhk))
 
     # Removing unwanted columns
-    df = pp_remove(df, ['unnamed_0', 'bhk'])
+    df = preprocess.remove(df, ['unnamed_0', 'bhk'])
 
     # Adding title case
-    df = pp_title(df, ['plot_type', 'construction_status', 'location'])
+    df = preprocess.title(df, ['plot_type', 'construction_status', 'location'])
 
     # Concatenating city into location
     df['location'] = df['location'] + ', ' + df['city']
@@ -68,19 +67,19 @@ def run_model():
         'location', 'city', 'construction_status'
     ]
     for column in encoding_variables:
-        encodings[column] = create_encodings(
+        encodings[column] = preprocess.create_encodings(
             df[column], df['total_price'])
 
     # Creating a numeric dataframe
     df_num = DataFrame()
     for column in encoding_variables:
-        df_num[column] = encode(df[column], encodings[column])
+        df_num[column] = preprocess.encode(df[column], encodings[column])
     df_num.insert(3, 'bhk/rk', df['bhk/rk'])
     df_num.insert(6, 'area_sqft', df['area_sqft'])
     df_num.insert(8, 'total_price', df['total_price'])
 
     # Removing outliers
-    df_fil = remove_outliers(df_num, ['total_price'], 10)
+    df_fil = preprocess.remove_outliers(df_num, ['total_price'], 10)
 
     # Model training
     X = df_fil.iloc[:, [2, 3, 4, 6, 7]]
@@ -90,7 +89,7 @@ def run_model():
 
     # Creating necessary directories
     cache_dir = path.join('data', 'cache')
-    makedirs(cache_dir)
+    makedirs(cache_dir, exist_ok=True)
 
     # Saving the model
     headers_path = path.join(cache_dir, 'headers.json')
@@ -100,7 +99,7 @@ def run_model():
         json_dump({
             'encoding_variables': encoding_variables,
             'encodings': encodings,
-            'data_values': get_values(df[encoding_variables].to_dict()),
+            'data_values': preprocess.get_values(df[encoding_variables].to_dict()),
             'columns': X.columns.tolist()
         }, headers_writer, indent=4)
     print(f'Writing model to {model_path}')

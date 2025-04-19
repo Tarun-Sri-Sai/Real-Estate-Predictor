@@ -24,7 +24,7 @@ export class PriceService {
   makeRequest(processedInput: { [column: string]: any[] }): void {
     this.http
       .post<any>(
-        'http://localhost:5000/real_estate_predictor/prediction',
+        'http://localhost/api/prediction',
         processedInput
       )
       .subscribe({

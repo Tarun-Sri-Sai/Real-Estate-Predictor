@@ -1,6 +1,4 @@
-from pandas import DataFrame as pd_df
-
-from pandas import Series
+from pandas import DataFrame as pd_df, Series
 from numpy import ndarray
 
 

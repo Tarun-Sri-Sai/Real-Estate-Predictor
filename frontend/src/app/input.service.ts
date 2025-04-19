@@ -12,7 +12,7 @@ export class InputService {
     [column: string]: any;
   }): Observable<{ [key: string]: { [column: string]: any[] } }> {
     return this.http.post<any>(
-      'http://localhost:5000/real_estate_predictor/input',
+      'http://localhost/api/input',
       inputData
     );
   }

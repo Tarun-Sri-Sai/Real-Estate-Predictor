@@ -13,7 +13,7 @@ export class DataValuesService {
 
   makeRequest(): void {
     this.http
-      .get<any>('http://localhost:5000/real_estate_predictor/data_values')
+      .get<any>('http://localhost/api/data_values')
       .subscribe({
         next: (response) => {
           this.dataValues = response['data_values'];

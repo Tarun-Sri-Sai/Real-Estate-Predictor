@@ -8,18 +8,18 @@ A web application that takes in details about the property you're looking for, a
 
 This project requires the following software:
 
-- docker:24
+- docker: 28.0 or above
 
 ## Usage
 
 Open Docker Desktop and run the following command in the terminal at the root of this repository:
 
 ```bash
-docker-compose up --build
+docker compose up --build
 ```
 
 To stop the container, run the following command:
 
 ```bash
-docker-compose down
+docker compose down
 ```

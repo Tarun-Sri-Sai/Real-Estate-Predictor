@@ -1,9 +1,9 @@
-from pickle import load as pk_load
-from json import load as json_load
-from model import run_model
+import pickle
+import json
 from os import path
-from pandas import DataFrame
+from pandas import DataFrame as pd_df
 from zipfile import ZipFile
+from . import model
 
 
 class RealEstate:
@@ -16,13 +16,13 @@ class RealEstate:
         headers_path = path.join(cache_dir, 'headers.json')
         model_path = path.join(cache_dir, 'model.sav')
         if not any([path.isfile(headers_path), path.isfile(model_path)]):
-            run_model()
+            model.run_model()
         else:
             print(f'Reading headers from {headers_path}')
             print(f'Reading model from {model_path}')
 
-        self.headers = json_load(open(headers_path, 'r'))
-        self.model = pk_load(open(model_path, 'rb'))
+        self.headers = json.load(open(headers_path, 'r'))
+        self.model = pickle.load(open(model_path, 'rb'))
 
     def get_columns(self):
         return self.headers['columns']
@@ -47,4 +47,4 @@ class RealEstate:
         for column in self.get_columns():
             ordered_input[column] = input[column]
 
-        return self.model.predict(DataFrame(ordered_input, index=[0]))[0]
+        return self.model.predict(pd_df(ordered_input, index=[0]))[0]

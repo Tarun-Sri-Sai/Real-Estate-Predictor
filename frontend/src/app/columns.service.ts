@@ -13,7 +13,7 @@ export class ColumnsService {
 
   makeRequest(): void {
     this.http
-      .get<any>('http://localhost:5000/real_estate_predictor/column_names')
+      .get<any>('http://localhost/api/column_names')
       .subscribe({
         next: (response) => {
           this.columns = response['column_names'];
