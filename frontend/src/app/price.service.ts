@@ -1,6 +1,5 @@
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpParams } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { InputService } from './input.service';
 
 @Injectable({
   providedIn: 'root',
@@ -8,25 +7,18 @@ import { InputService } from './input.service';
 export class PriceService {
   price: number = 0;
 
-  constructor(private http: HttpClient, private inputService: InputService) {}
+  constructor(private http: HttpClient) {}
 
-  predictPrice(inputData: { [column: string]: any[] }): void {
-    this.inputService.makeRequest(inputData).subscribe({
-      next: (response) => {
-        this.makeRequest(response['processed_input']);
-      },
-      error: (error) => {
-        console.error("Couldn't post input due to ", error);
-      },
-    });
-  }
+  predictPrice(inputData: { [column: string]: any }): void {
+    let params = new HttpParams();
+    for (const key in inputData) {
+        params = params.append(key, JSON.stringify(inputData[key]));
+    }
 
-  makeRequest(processedInput: { [column: string]: any[] }): void {
     this.http
-      .get<any>(
-        'http://localhost/api/prediction',
-        processedInput
-      )
+      .get<any>('http://localhost/api/prediction', {
+        params
+      })
       .subscribe({
         next: (response) => {
           this.price = response['price_in_lacs'];

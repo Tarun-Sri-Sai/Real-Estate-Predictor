@@ -1,5 +1,6 @@
 from flask import Flask, request
 from .real_estate import RealEstate
+from json import loads
 
 
 server = Flask(__name__)
@@ -18,15 +19,10 @@ def data_values_endpoint():
     return {'data_values': data_values}
 
 
-@server.route('/api/input', methods=['POST'])
-def input_endpoint():
-    input_data = request.json
-    processed_input = real_estate.process_input(input_data)
-    return {'processed_input': processed_input}
-
-
 @server.route('/api/prediction', methods=['GET'])
 def prediction_endpoint():
-    processed_input = request.json
+    processed_input = real_estate.process_input({
+        k: loads(v) for k, v in request.args.items()
+    })
     price_in_lacs = real_estate.predict_price(processed_input)
     return {'price_in_lacs': price_in_lacs}
