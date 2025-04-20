@@ -23,7 +23,7 @@ export class PriceService {
 
   makeRequest(processedInput: { [column: string]: any[] }): void {
     this.http
-      .post<any>(
+      .get<any>(
         'http://localhost/api/prediction',
         processedInput
       )
