@@ -25,7 +25,7 @@ def input_endpoint():
     return {'processed_input': processed_input}
 
 
-@server.route('/api/prediction', methods=['POST'])
+@server.route('/api/prediction', methods=['GET'])
 def prediction_endpoint():
     processed_input = request.json
     price_in_lacs = real_estate.predict_price(processed_input)
