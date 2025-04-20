@@ -9,6 +9,7 @@ A web application that takes in details about the property you're looking for, a
 This project requires the following software:
 
 - docker: 28.0 or above
+- 7z: 24 or above
 
 ## Usage
 
