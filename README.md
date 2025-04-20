@@ -12,10 +12,10 @@ This project requires the following software:
 
 ## Usage
 
-1. Extract `server/data.zip` into `server`.
+1. Extract `server/data.7z` into `server`.
 
    ```bash
-   7z x "server/data.zip" -o"server"
+   7z x "server/data.7z" -o"server"
    ```
 
 2. Open Docker Desktop and run the following command in the terminal at the root of this repository:
